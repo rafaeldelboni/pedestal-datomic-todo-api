@@ -12,6 +12,14 @@ FIXME: explanation
 
     $ java -jar ring-datomic-api-0.1.0-standalone.jar [args]
 
+
+## Datomic
+
+Create a .credentials file containing user:pass for downloading from my.datomic.com
+
+    $ docker-compose build
+    $ docker-compose up -d
+
 ## Options
 
 FIXME: listing of options this app accepts.
