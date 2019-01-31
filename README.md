@@ -15,7 +15,7 @@ FIXME: explanation
 
 ## Datomic
 
-Create a .credentials file containing user:pass for downloading from my.datomic.com
+Create a `docker/.credentials` file containing user:pass for downloading files from my.datomic.com
 
     $ docker-compose build
     $ docker-compose up -d
