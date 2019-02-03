@@ -6,13 +6,6 @@ services:
       - "4334:4334"
       - "4335:4335"
       - "4336:4336"
-  console:
-    build:
-      context: ./docker
-      dockerfile: datomic-console.Dockerfile
-    ports:
-      - "9000:9000"
-    links:
-      - datomicdb
-    depends_on:
-      - datomicdb
+    volumes:
+      - "/data"
+
