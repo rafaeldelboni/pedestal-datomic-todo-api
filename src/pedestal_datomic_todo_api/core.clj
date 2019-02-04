@@ -1,4 +1,4 @@
-(ns ring-datomic-api.core
+(ns pedestal-datomic-todo-api.core
   (:gen-class))
 
 (defn -main

@@ -1,4 +1,4 @@
-# ring-datomic-api
+# pedestal-datomic-todo-api
 
 FIXME: description
 
@@ -6,19 +6,18 @@ FIXME: description
 
 Download from http://example.com/FIXME.
 
-## Usage
-
-FIXME: explanation
-
-    $ java -jar ring-datomic-api-0.1.0-standalone.jar [args]
-
-
 ## Datomic
 
 Create a `docker/.credentials` file containing user:pass for downloading files from my.datomic.com
 
     $ docker-compose build
     $ docker-compose up -d
+
+## Usage
+
+FIXME: explanation
+
+    $ java -jar pedestal-datomic-todo-api-0.1.0-standalone.jar [args]
 
 ## Options
 

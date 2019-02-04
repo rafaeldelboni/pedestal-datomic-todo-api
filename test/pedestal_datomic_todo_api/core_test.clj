@@ -1,6 +1,6 @@
-(ns ring-datomic-api.core-test
+(ns pedestal-datomic-todo-api.core-test
   (:require [clojure.test :refer :all]
-            [ring-datomic-api.core :refer :all]))
+            [pedestal-datomic-todo-api.core :refer :all]))
 
 (deftest a-test
   (testing "FIXME, I fail."
