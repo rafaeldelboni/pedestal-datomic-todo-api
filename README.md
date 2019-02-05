@@ -2,16 +2,14 @@
 [![Status][badge-status]][badge-status]
 #### Mixing some Clojure, Pedestal and Datomic to create an API
 
-## Installation
-
-Download from http://example.com/FIXME.
-
 ## Datomic
-
-Create a `docker/.credentials` file containing user:pass for downloading files from my.datomic.com
 
     $ docker-compose build
     $ docker-compose up -d
+
+## Installation
+
+Download from http://example.com/FIXME.
 
 ## Usage
 
