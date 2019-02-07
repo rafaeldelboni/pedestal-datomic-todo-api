@@ -1,17 +1,15 @@
 # pedestal-datomic-todo-api
+[![Status][badge-status]][badge-status]
+#### Mixing some Clojure, Pedestal and Datomic to create an API
 
-FIXME: description
+## Datomic
+
+    $ docker-compose build
+    $ docker-compose up -d
 
 ## Installation
 
 Download from http://example.com/FIXME.
-
-## Datomic
-
-Create a `docker/.credentials` file containing user:pass for downloading files from my.datomic.com
-
-    $ docker-compose build
-    $ docker-compose up -d
 
 ## Usage
 
@@ -49,3 +47,5 @@ Public License, v. 2.0 are satisfied: GNU General Public License as published by
 the Free Software Foundation, either version 2 of the License, or (at your
 option) any later version, with the GNU Classpath Exception which is available
 at https://www.gnu.org/software/classpath/license.html.
+
+[badge-status]: https://img.shields.io/badge/status-work%20in%20progress-lightgrey.svg
