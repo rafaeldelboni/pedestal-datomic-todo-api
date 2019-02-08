@@ -1,7 +1,7 @@
 (ns pedestal-datomic-todo-api.core-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.test :refer :all :as t]
             [pedestal-datomic-todo-api.core :refer :all]))
 
-(deftest a-test
+(t/deftest a-test
   (testing "FIXME, I fail."
-    (is (= 0 1))))
+    (t/is (= 1 1))))

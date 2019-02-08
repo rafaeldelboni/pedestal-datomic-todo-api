@@ -9,4 +9,6 @@
                  [com.datomic/datomic-free "0.9.5697"]]
   :main ^:skip-aot pedestal-datomic-todo-api.core
   :target-path "target/%s"
-  :profiles {:uberjar {:aot :all}})
+  :profiles {:uberjar {:aot :all}}
+  :test-selectors {:default (complement :integration)
+                   :integration :integration })

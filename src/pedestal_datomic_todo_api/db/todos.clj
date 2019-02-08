@@ -23,20 +23,20 @@
     :db/cardinality :db.cardinality/one
     :db/id          (d/tempid :db.part/db)}])
 
-(def ^:private db-uri "datomic:free://localhost:4334/todos")
+(def db-uri "datomic:free://localhost:4334/todos")
 
 
-(def ^:private query-todos '[:find ?e ?id ?done ?text
+(def ^:private query-todos '[:find (pull ?e [:todo/id :todo/done? :todo/text])
                        :where [?e :todo/id ?id]
                               [?e :todo/done? ?done]
                               [?e :todo/text ?text]])
 
 (defn- db-build-todo
   [tempid id text done?]
-  [{:db/id      tempid
+  {:db/id      tempid
     :todo/id    id
     :todo/text  text
-    :todo/done? done?}])
+    :todo/done? done?})
 
 (defn- db-new-todo
   [tempid text]
@@ -55,12 +55,12 @@
 (defn create-todo!
   [conn text]
   (let [todo (db-new-todo (d/tempid :db.part/user) text)]
-    @(d/transact conn todo)
+    @(d/transact conn [todo])
     todo))
 
 (defn read-todos
   [conn]
-  (d/q query-todos (d/db conn)))
+  (first (d/q query-todos (d/db conn))))
 
 (defn update-todo!
   [conn id text done]
@@ -70,11 +70,12 @@
           (read-string (str "#uuid \"" id "\""))
           text
           done)]
-    @(d/transact conn todo)
+    @(d/transact conn [todo])
     todo))
 
 (defn delete-todo!
   [conn id]
-  (let [todo (db-delete-todo (read-string (str "#uuid \"" id "\"")))]
+  (let [uuid (read-string (str "#uuid \"" id "\""))
+        todo (db-delete-todo uuid)]
     @(d/transact conn todo)
-    [:todo/id id]))
+    uuid))
