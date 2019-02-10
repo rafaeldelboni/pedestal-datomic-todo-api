@@ -46,7 +46,7 @@
   (let [todo
         (db-build-todo
           (d/tempid :db.part/user)
-          (read-string (str "#uuid \"" id "\""))
+          id
           text
           done)]
     @(d/transact conn [todo])
@@ -54,7 +54,7 @@
 
 (defn delete-todo!
   [conn id]
-  (let [uuid (read-string (str "#uuid \"" id "\""))
+  (let [uuid id
         todo (db-delete-todo uuid)]
     @(d/transact conn todo)
     uuid))
