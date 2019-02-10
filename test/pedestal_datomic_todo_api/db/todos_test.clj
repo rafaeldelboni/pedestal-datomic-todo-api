@@ -11,6 +11,18 @@
 
 (t/use-fixtures :each datomic-rollback-fixture)
 
+(t/deftest ^:integration get-db-test
+  (let [conn (db/init-db-conn!)]
+    (t/testing "should get specific todo"
+      (let [inserted-todo-1 (todos/create-todo! conn "Play Zelda II")
+            inserted-todo-2 (todos/create-todo! conn "Play RE2 2019")
+            selected-todo (todos/get-todo conn (:todo/id inserted-todo-1))]
+        (t/is (= (:todo/id inserted-todo-1) (:todo/id selected-todo)))
+        (t/is (= (:todo/text inserted-todo-1) (:todo/text selected-todo)))
+        (t/is (= (:todo/done? inserted-todo-1) (:todo/done? selected-todo)))
+        (t/is (not= (:todo/id inserted-todo-2) (:todo/id selected-todo))))
+      )))
+
 (t/deftest ^:integration insert-db-test
   (let [conn (db/init-db-conn!)]
     (t/testing "should insert a todo"
