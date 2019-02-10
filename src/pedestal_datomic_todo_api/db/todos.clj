@@ -57,4 +57,4 @@
   (let [uuid id
         todo (db-delete-todo uuid)]
     @(d/transact conn todo)
-    uuid))
+    {:todo/id uuid}))

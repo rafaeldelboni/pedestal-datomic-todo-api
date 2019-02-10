@@ -12,6 +12,7 @@
 (defn -main
   "The entry-point for 'lein run-dev'"
   [& args]
+  (println "\nCreating your server on port 8080")
   (->> service
        http/default-interceptors
        http/dev-interceptors

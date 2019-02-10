@@ -2,3 +2,6 @@
 
 (defn str->uuid [id-str]
   (read-string (str "#uuid \"" id-str "\"")))
+
+(defn str->bool [bool-str]
+  (read-string bool-str))
