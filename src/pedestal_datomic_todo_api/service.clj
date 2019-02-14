@@ -24,7 +24,7 @@
     (ctrl-todos/get-todo @conn (adapters/str->uuid id))))
 
 (defn get-todos
-  []
+  [_]
   (ring-resp/response
     (ctrl-todos/get-todos @conn)))
 
