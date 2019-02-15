@@ -41,11 +41,10 @@
 
   (stop [component]
     (println ";; Stopping database")
-    (.close connection)
     (assoc component :connection nil))
 
   storage-client/StorageClient
-  (query [_this data args] (d/q data connection args))
+  (query [_this data args] (d/q data (d/db connection) args))
   (exec! [_this data] @(d/transact connection data)))
 
 (defn new-storage-datomic [uri]

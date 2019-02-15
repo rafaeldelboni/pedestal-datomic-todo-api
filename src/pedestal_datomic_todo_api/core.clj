@@ -15,6 +15,22 @@
 
 (def db-uri "datomic:free://localhost:4334/todos")
 
+(def system (atom nil))
+
+(defn- build-system-map []
+  (component/system-map
+    :storage (storage/new-storage-datomic db-uri)
+    :routes  (routes/new-routes #'pedestal-datomic-todo-api.service/routes)
+    :http-server (component/using (webserver/new-webserver) [:routes :storage])))
+
+(defn start-system! []
+  (->> (build-system-map)
+       component/start
+       (reset! system)))
+
+(defn stop-components! []
+  (swap! system #(component/stop %)))
+
 ; TODO: replace main with build-and-start
 (defn -main
   "The entry-point for 'lein run-dev'"
@@ -25,15 +41,3 @@
        http/dev-interceptors
        http/create-server
        http/start))
-
-(defn- build []
-  (component/system-map
-    :storage (storage/new-storage-datomic db-uri)
-    :routes  (routes/new-routes #'pedestal-datomic-todo-api.service/routes)
-    :server  (component/using (webserver/new-webserver) [:routes :storage])))
-
-(defn build-and-start
-  "Configure components dependencies and start the system"
-  []
-  (-> (build)
-      (component/start)))

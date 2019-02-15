@@ -3,6 +3,7 @@
             [io.pedestal.http.body-params :as body-params]
             [pedestal-datomic-todo-api.adapters :as adapters]
             [pedestal-datomic-todo-api.controllers.todos :as ctrl-todos]
+            [pedestal-datomic-todo-api.protocols.storage-client :as sto]
             [pedestal-datomic-todo-api.db :as db]
             [ring.util.response :as ring-resp]))
 
@@ -14,24 +15,27 @@
   (ring-resp/response {:message "Hello World!"}))
 
 (defn create-todo
-  [{{:keys [text]} :json-params}]
+  [{{:keys [text]} :json-params
+    {:keys [storage]} :components}]
   (ring-resp/response
     (ctrl-todos/create-todo! @conn text)))
 
 (defn get-todo
-  [{{:keys [id]} :path-params}]
+  [{{:keys [id]} :path-params
+    {:keys [storage]} :components}]
   (ring-resp/response
     (ctrl-todos/get-todo @conn (adapters/str->uuid id))))
 
 (defn get-todos
-  [_]
+  [{{:keys [storage]} :components}]
   (ring-resp/response
     (ctrl-todos/get-todos @conn)))
 
 (defn update-todo
   [{{:keys [id]} :json-params
     {:keys [text]} :json-params
-    {:keys [done]} :json-params}]
+    {:keys [done]} :json-params
+    {:keys [storage]} :components}]
   (ring-resp/response
     (ctrl-todos/update-todo!
       @conn
@@ -40,7 +44,8 @@
       (adapters/str->bool done))))
 
 (defn delete-todo
-  [{{:keys [id]} :path-params}]
+  [{{:keys [id]} :path-params
+    {:keys [storage]} :components}]
   (ring-resp/response
     (ctrl-todos/delete-todo! @conn (adapters/str->uuid id))))
 
