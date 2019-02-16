@@ -1,5 +1,6 @@
 (ns pedestal-datomic-todo-api.db.todos
-  (:require [datomic.api :as d]))
+  (:require [datomic.api :as d]
+            [pedestal-datomic-todo-api.protocols.storage-client :as storage-cli]))
 
 (def ^:private db-get-todos 
   '[:find (pull ?e [:todo/id :todo/done? :todo/text])
@@ -28,33 +29,33 @@
   [[:db.fn/retractEntity [:todo/id id]]])
 
 (defn create-todo!
-  [conn text]
+  [storage text]
   (let [todo (db-new-todo (d/tempid :db.part/user) text)]
-    @(d/transact conn [todo])
+    (storage-cli/exec! storage [todo])
     todo))
 
 (defn get-todo
-  [conn id]
-  (get-in (d/q db-get-todo (d/db conn) id) [0 0]))
+  [storage id]
+  (get-in (storage-cli/query storage db-get-todo id) [0 0]))
 
 (defn get-todos
-  [conn]
-  (d/q db-get-todos (d/db conn)))
+  [storage]
+  (storage-cli/query storage db-get-todos nil))
 
 (defn update-todo!
-  [conn id text done]
+  [storage id text done]
   (let [todo
         (db-build-todo
           (d/tempid :db.part/user)
           id
           text
           done)]
-    @(d/transact conn [todo])
+    (storage-cli/exec! storage [todo])
     todo))
 
 (defn delete-todo!
-  [conn id]
+  [storage id]
   (let [uuid id
         todo (db-delete-todo uuid)]
-    @(d/transact conn todo)
+    (storage-cli/exec! storage todo)
     {:todo/id uuid}))

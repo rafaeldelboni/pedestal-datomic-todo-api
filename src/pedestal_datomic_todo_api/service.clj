@@ -3,12 +3,7 @@
             [io.pedestal.http.body-params :as body-params]
             [pedestal-datomic-todo-api.adapters :as adapters]
             [pedestal-datomic-todo-api.controllers.todos :as ctrl-todos]
-            [pedestal-datomic-todo-api.protocols.storage-client :as sto]
-            [pedestal-datomic-todo-api.db :as db]
             [ring.util.response :as ring-resp]))
-
-;TODO: Remove this and replace with DI (storage)!
-(defonce conn (atom (db/init-db-conn!)))
 
 (defn home-page
   [request]
@@ -18,18 +13,18 @@
   [{{:keys [text]} :json-params
     {:keys [storage]} :components}]
   (ring-resp/response
-    (ctrl-todos/create-todo! @conn text)))
+    (ctrl-todos/create-todo! storage text)))
 
 (defn get-todo
   [{{:keys [id]} :path-params
     {:keys [storage]} :components}]
   (ring-resp/response
-    (ctrl-todos/get-todo @conn (adapters/str->uuid id))))
+    (ctrl-todos/get-todo storage (adapters/str->uuid id))))
 
 (defn get-todos
   [{{:keys [storage]} :components}]
   (ring-resp/response
-    (ctrl-todos/get-todos @conn)))
+    (ctrl-todos/get-todos storage)))
 
 (defn update-todo
   [{{:keys [id]} :json-params
@@ -38,7 +33,7 @@
     {:keys [storage]} :components}]
   (ring-resp/response
     (ctrl-todos/update-todo!
-      @conn
+      storage
       (adapters/str->uuid id)
       text
       (adapters/str->bool done))))
@@ -47,7 +42,7 @@
   [{{:keys [id]} :path-params
     {:keys [storage]} :components}]
   (ring-resp/response
-    (ctrl-todos/delete-todo! @conn (adapters/str->uuid id))))
+    (ctrl-todos/delete-todo! storage (adapters/str->uuid id))))
 
 (def common-interceptors
   [(body-params/body-params) http/json-body])

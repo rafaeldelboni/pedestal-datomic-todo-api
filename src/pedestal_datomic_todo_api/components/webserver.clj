@@ -15,12 +15,12 @@
              [::http/interceptors]
              #(vec (->> % (cons (add-system service))))))
 
-(defn base-service [routes port]
+(defn base-service [routes config]
   {:env          :dev
    ::http/type   :jetty
    ::http/routes #(route/expand-routes (deref routes))
    ::http/join?  false
-   ::http/port   port})
+   ::http/port   (:http-port config)})
 
 (defn dev-init [service-map]
   (-> service-map
@@ -28,12 +28,12 @@
       http/default-interceptors
       http/dev-interceptors))
 
-(defrecord WebServer [routes storage]
+(defrecord WebServer [config routes storage]
   component/Lifecycle
   (start [this]
     (println (str ";; Starting webserver"))
     (assoc this :http-server
-           (->> (base-service (:routes routes) 8080)
+           (->> (base-service (:routes routes) (:config config))
                 dev-init
                 (system-interceptors this)
                 http/create-server
