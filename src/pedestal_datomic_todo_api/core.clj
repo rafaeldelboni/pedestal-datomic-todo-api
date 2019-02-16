@@ -1,4 +1,5 @@
 (ns pedestal-datomic-todo-api.core
+  (:gen-class)
   (:require [com.stuartsierra.component :as component]
             [pedestal-datomic-todo-api.components.config :as config]
             [pedestal-datomic-todo-api.components.routes :as routes]
