@@ -1,11 +1,10 @@
 version: '3'
 services:
   datomicdb:
-    image: akiel/datomic-free
+    image: akiel/datomic-free:0.9.5656
     ports:
       - "4334:4334"
       - "4335:4335"
       - "4336:4336"
     volumes:
       - "/data"
-

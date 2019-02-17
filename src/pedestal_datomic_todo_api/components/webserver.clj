@@ -17,13 +17,21 @@
 
 (defn base-service [routes config]
   {:env          :dev
-   ::http/type   :jetty
+   ::http/router :prefix-tree
    ::http/routes #(route/expand-routes (deref routes))
-   ::http/join?  false
-   ::http/port   (:http-port config)})
+   ::http/type   :jetty
+   ::http/port   (:http-port config)
+   ::http/host   (:http-host config)})
 
 (defn dev-init [service-map]
   (-> service-map
+      (merge {:env                   :dev
+              ;; do not block thread that starts web server
+              ::http/join?           false
+              ;; Content Security Policy (CSP) is mostly turned off in dev mode
+              ::http/secure-headers  {:content-security-policy-settings {:object-src "none"}}
+              ;; all origins are allowed in dev mode
+              ::http/allowed-origins {:creds true :allowed-origins (constantly true)}})
       ;; Wire up interceptor chains
       http/default-interceptors
       http/dev-interceptors))
@@ -31,7 +39,8 @@
 (defrecord WebServer [config routes storage]
   component/Lifecycle
   (start [this]
-    (println (str ";; Starting webserver"))
+    (println 
+      (str ";; Starting webserver on " (get-in config [:config :http-port])))
     (assoc this :http-server
            (->> (base-service (:routes routes) (:config config))
                 dev-init

@@ -1,0 +1,29 @@
+version: "3"
+services:
+  api:
+    build: .
+    ports:
+      - "3000:3000"
+    entrypoint:
+      - "java"
+      - "-jar"
+      - "target/uberjar/api.jar"
+    environment:
+      - DB_URI=datomic:free://db:4334/todos
+      - HTTP_PORT=3000
+      - HTTP_HOST=0.0.0.0
+    depends_on:
+      - db
+  db:
+    image: akiel/datomic-free:0.9.5656
+    ports:
+      - "4334:4334"
+      - "4335:4335"
+      - "4336:4336"
+    volumes:
+      - db-data:/data
+    environment:
+      - ALT_HOST=db
+
+volumes:
+  db-data:

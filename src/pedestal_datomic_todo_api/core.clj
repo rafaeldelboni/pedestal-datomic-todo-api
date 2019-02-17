@@ -8,15 +8,11 @@
             [pedestal-datomic-todo-api.server :as server]
             [pedestal-datomic-todo-api.service :as service]))
 
-(def config-map 
-  {:db-uri "datomic:free://localhost:4334/todos"
-   :http-port 8080})
-
 (def system (atom nil))
 
 (defn- build-system-map []
   (component/system-map
-    :config (config/new-config config-map)
+    :config (config/new-config config/config-map)
     :storage (component/using (storage/new-storage-datomic) [:config])
     :routes  (routes/new-routes #'pedestal-datomic-todo-api.service/routes)
     :http-server (component/using (webserver/new-webserver) [:config :routes :storage])))

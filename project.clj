@@ -11,5 +11,6 @@
   :main ^:skip-aot pedestal-datomic-todo-api.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}}
+  :uberjar-name "api.jar"
   :test-selectors {:default (complement :integration)
                    :integration :integration })
