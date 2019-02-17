@@ -59,5 +59,6 @@ You can use Docker to setup your local dev environment database or test the api 
 
     $ docker-compose -f docker-compose-dev.yml build
     $ docker-compose -f docker-compose-dev.yml up -d
+This command should start a server on [http://localhost:3000](http://localhost:3000).
 
 [badge-status]: https://img.shields.io/badge/status-work%20in%20progress-lightgrey.svg
