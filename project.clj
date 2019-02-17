@@ -5,8 +5,9 @@
             :url "https://www.eclipse.org/legal/epl-2.0/"}
   :dependencies [[org.clojure/clojure "1.10.0"]
                  [com.stuartsierra/component "0.4.0"]
-                 [io.pedestal/pedestal.service "0.5.5"]
                  [io.pedestal/pedestal.jetty "0.5.5"]
+                 [io.pedestal/pedestal.service "0.5.5"]
+                 [io.pedestal/pedestal.service-tools "0.5.5"]
                  [com.datomic/datomic-free "0.9.5697"]]
   :main ^:skip-aot pedestal-datomic-todo-api.core
   :target-path "target/%s"

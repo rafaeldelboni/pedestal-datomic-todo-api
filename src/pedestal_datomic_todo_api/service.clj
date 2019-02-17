@@ -7,7 +7,7 @@
 
 (defn home-page
   [request]
-  (ring-resp/response {:message "Hello World!"}))
+  (ring-resp/response {:message "Hello World!!"}))
 
 (defn create-todo
   [{{:keys [text]} :json-params

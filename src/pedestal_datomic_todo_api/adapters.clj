@@ -5,3 +5,6 @@
 
 (defn str->bool [bool-str]
   (read-string bool-str))
+
+(defn todo-datomic->json [todo]
+  {:id (:todo/id todo)})
