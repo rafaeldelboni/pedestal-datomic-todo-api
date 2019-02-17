@@ -2,50 +2,62 @@
 [![Status][badge-status]][badge-status]
 #### Mixing some Clojure, Pedestal and Datomic to create an API
 
-## Datomic
+## Built With
 
-    $ docker-compose build
-    $ docker-compose up -d
+* [Clojure](https://clojure.org/)
+* [Leiningen](https://leiningen.org/)
+* [Pedestal](https://github.com/pedestal/pedestal)
+* [Datomic](https://www.datomic.com)
+* [Docker](https://docs.docker.com/)
 
-## Installation
+## Getting Started
 
-Download from http://example.com/FIXME.
+These instructions will get the project up and running on your local machine for development and testing purposes.
 
-## Usage
+### Prerequisites
 
-FIXME: explanation
+What things you need to install to run this project
 
-    $ java -jar pedestal-datomic-todo-api-0.1.0-standalone.jar [args]
+* [Java](http://www.oracle.com/technetwork/pt/java/javase/downloads/jdk8-downloads-2133151.html)
+* [Clojure](https://clojure.org/guides/getting_started)
+* [Leiningen](https://leiningen.org/)
+* [DatomicFree](https://my.datomic.com/downloads/free)
 
-## Options
+### Restore dependencies
+```
+lein deps
+```
 
-FIXME: listing of options this app accepts.
+### Run the application
 
-## Examples
+```
+lein run
+```
+This command should start a server on [http://localhost:8080](http://localhost:8080).
 
-...
+## Running the tests
 
-### Bugs
+To run all the tests
+```
+lein test
+```
 
-...
+## Docker
 
-### Any Other Sections
-### That You Think
-### Might be Useful
+You can use Docker to setup your local dev environment database or test the api without need any above installed.
 
-## License
+### Prerequisites
 
-Copyright © 2019 FIXME
+* [Docker](https://docs.docker.com/install/)
 
-This program and the accompanying materials are made available under the
-terms of the Eclipse Public License 2.0 which is available at
-http://www.eclipse.org/legal/epl-2.0.
+### Datomic Only
 
-This Source Code may also be made available under the following Secondary
-Licenses when the conditions for such availability set forth in the Eclipse
-Public License, v. 2.0 are satisfied: GNU General Public License as published by
-the Free Software Foundation, either version 2 of the License, or (at your
-option) any later version, with the GNU Classpath Exception which is available
-at https://www.gnu.org/software/classpath/license.html.
+    $ docker-compose -f docker-compose-db.yml build
+    $ docker-compose -f docker-compose-db.yml up -d
+
+### Api and Datomic
+
+    $ docker-compose -f docker-compose-dev.yml build
+    $ docker-compose -f docker-compose-dev.yml up -d
 
 [badge-status]: https://img.shields.io/badge/status-work%20in%20progress-lightgrey.svg
