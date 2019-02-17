@@ -10,7 +10,7 @@
 (def system (atom nil))
 
 (def config-map 
-  {:db-uri "datomic:free://localhost:4334/todos-test"})
+  {:db-uri (str "datomic:mem://" "mem-conn-" (d/squuid))})
 
 (defn- build-system-map []
   (component/system-map

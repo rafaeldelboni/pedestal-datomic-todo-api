@@ -37,9 +37,14 @@ This command should start a server on [http://localhost:8080](http://localhost:8
 
 ## Running the tests
 
-To run all the tests
+To run unity the tests
 ```
 lein test
+```
+
+To run all the tests
+```
+lein test :all
 ```
 
 ## Docker
