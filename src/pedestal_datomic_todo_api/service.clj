@@ -13,18 +13,22 @@
   [{{:keys [text]} :json-params
     {:keys [storage]} :components}]
   (ring-resp/response
-    (ctrl-todos/create-todo! storage text)))
+    (->> (ctrl-todos/create-todo! storage text)
+         (adapters/todos-datomic->json))))
 
 (defn get-todo
   [{{:keys [id]} :path-params
     {:keys [storage]} :components}]
   (ring-resp/response
-    (ctrl-todos/get-todo storage (adapters/str->uuid id))))
+    (->> (ctrl-todos/get-todo storage (adapters/str->uuid id))
+         (map adapters/todos-datomic->json)
+         (first))))
 
 (defn get-todos
   [{{:keys [storage]} :components}]
   (ring-resp/response
-    (ctrl-todos/get-todos storage)))
+    (->> (ctrl-todos/get-todos storage)
+         (map adapters/todos-datomic->json))))
 
 (defn update-todo
   [{{:keys [id]} :json-params
@@ -32,17 +36,16 @@
     {:keys [done]} :json-params
     {:keys [storage]} :components}]
   (ring-resp/response
-    (ctrl-todos/update-todo!
-      storage
-      (adapters/str->uuid id)
-      text
-      (adapters/str->bool done))))
+    (->> (ctrl-todos/update-todo!
+           storage (adapters/str->uuid id) text (adapters/str->bool done))
+         (adapters/todos-datomic->json))))
 
 (defn delete-todo
   [{{:keys [id]} :path-params
     {:keys [storage]} :components}]
   (ring-resp/response
-    (ctrl-todos/delete-todo! storage (adapters/str->uuid id))))
+    (->> (ctrl-todos/delete-todo! storage (adapters/str->uuid id))
+         (adapters/todos-datomic->json))))
 
 (def common-interceptors
   [(body-params/body-params) http/json-body])
