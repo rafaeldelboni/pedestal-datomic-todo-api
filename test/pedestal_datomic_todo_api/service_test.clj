@@ -1,5 +1,6 @@
 (ns pedestal-datomic-todo-api.service-test
   (:require [clojure.test :refer :all :as t]
+            [clojure.string :as str]
             [com.stuartsierra.component :as component]
             [datomic.api :refer :all :as d]
             [io.pedestal.test :refer :all :as pt]
@@ -12,7 +13,7 @@
 
 (def system (atom nil))
 
-(def config-map 
+(def config-map
   {:db-uri (str "datomic:mem://" "mem-conn-" (d/squuid))
    :http-port 8989
    :http-host "localhost"})
@@ -24,8 +25,12 @@
     :routes  (routes/new-routes #'pedestal-datomic-todo-api.service/routes)
     :http-server (component/using (webserver/new-webserver) [:config :routes :storage])))
 
-(defn get-service-fn [system] 
+(defn get-service-fn [system]
   (get-in @system [:http-server :service :io.pedestal.http/service-fn]))
+
+(defn do-request [service verb route body]
+  (pt/response-for
+    service verb route :headers {"Content-Type" "application/json"} :body body))
 
 (defn datomic-rollback-fixture [test-fn]
   (do
@@ -35,8 +40,16 @@
 
 (t/use-fixtures :each datomic-rollback-fixture)
 
-(t/deftest home-page-test
+(t/deftest ^:integration home-page-test
   (t/testing "should get hello world"
     (let [service (get-service-fn system)]
       (t/is (= (:body (pt/response-for service :get "/"))
                "{\"message\":\"Hello World!!\"}")))))
+
+(t/deftest ^:integration create-todo-test
+  (t/testing "should create and list a todo"
+    (let [service (get-service-fn system)]
+      (let [created-todo
+            (:body (do-request service :post "/todo" "{\"text\": \"test\"}"))]
+        (t/is (= (str/includes? created-todo "\"text\":\"test\",\"done\":false")
+                 true))))))
