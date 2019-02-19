@@ -68,7 +68,7 @@
     (let [{storage :storage} (server/start-system! (build-system-map) system)]
       (let [inserted-todo-1 (first (todos/create-todo! storage "Play Zelda II"))
             inserted-todo-2 (first (todos/create-todo! storage "Play RE2 2019"))
-            deleted-todo (todos/delete-todo! storage (:todo/id inserted-todo-2))
+            deleted-todo (first (todos/delete-todo! storage (:todo/id inserted-todo-2)))
             selected-todo (get-in (todos/get-todos storage) [0 0])]
         (t/is (= (:todo/id inserted-todo-2) (:todo/id deleted-todo)))
         (t/is (= (:todo/id selected-todo) (:todo/id inserted-todo-1))))
