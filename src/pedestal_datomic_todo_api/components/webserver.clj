@@ -41,7 +41,7 @@
   (start [this]
     (println 
       (str ";; Starting webserver on " (get-in config [:config :http-port])))
-    (assoc this :http-server
+    (assoc this :service
            (->> (base-service (:routes routes) (:config config))
                 dev-init
                 (system-interceptors this)
@@ -50,8 +50,8 @@
 
   (stop [this]
     (println (str ";; Stopping webserver"))
-    (http/stop (:http-server this))
-    (dissoc this :http-server)
+    (http/stop (:service this))
+    (dissoc this :service)
     this))
 
 (defn new-webserver []
