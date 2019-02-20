@@ -3,11 +3,30 @@
             [io.pedestal.http.body-params :as body-params]
             [pedestal-datomic-todo-api.adapters :as adapters]
             [pedestal-datomic-todo-api.controllers.todos :as ctrl-todos]
+            [schema.core :as s]
             [ring.util.response :as ring-resp]))
+
+(def NewTodo {:text s/Str})
+
+(defn- get-storage [request]
+  (get-in request [:components :storage]))
+
+(defn- bad-response [errors]
+  (-> {:errors errors}
+    ring-resp/response
+    (ring-resp/status 500)))
 
 (defn home-page
   [request]
   (ring-resp/response {:message "Hello World!!"}))
+
+(defn home-page-post
+  [request]
+  (let [body (request :json-params)
+        storage (get-storage request)]
+    (if-let [errors (s/check NewTodo body)]
+      (bad-response errors)
+      (ring-resp/response {:message "Hello World!!" :body body}))))
 
 (defn create-todo
   [{{:keys [text]} :json-params
@@ -52,6 +71,7 @@
 
 (def routes
   #{["/" :get (conj common-interceptors `home-page)]
+    ["/" :post (conj common-interceptors `home-page-post)]
     ["/todo/:id" :get (conj common-interceptors `get-todo)]
     ["/todo" :get (conj common-interceptors `get-todos)]
     ["/todo" :post (conj common-interceptors `create-todo)]
