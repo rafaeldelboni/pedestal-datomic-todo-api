@@ -61,7 +61,6 @@
 
 (def routes
   #{["/" :get (conj common-interceptors `home-page)]
-    ["/" :post (conj common-interceptors `home-page-post)]
     ["/todo/:id" :get (conj common-interceptors `get-todo)]
     ["/todo" :get (conj common-interceptors `get-todos)]
     ["/todo" :post (conj common-interceptors `create-todo)]
