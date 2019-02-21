@@ -3,46 +3,55 @@
             [io.pedestal.http.body-params :as body-params]
             [pedestal-datomic-todo-api.adapters :as adapters]
             [pedestal-datomic-todo-api.controllers.todos :as ctrl-todos]
+            [pedestal-datomic-todo-api.schemes.todos :as sch-todos]
+            [schema.core :as s]
+            [schema.coerce :as coerce]
             [ring.util.response :as ring-resp]))
+
+(defn- parse-json-request [schema body]
+  ((coerce/coercer schema coerce/json-coercion-matcher) body))
+
+(defn- bad-response [errors]
+  (-> {:errors errors}
+    ring-resp/response
+    (ring-resp/status 500)))
 
 (defn home-page
   [request]
   (ring-resp/response {:message "Hello World!!"}))
 
 (defn create-todo
-  [{{:keys [text]} :json-params
-    {:keys [storage]} :components}]
-  (ring-resp/response
-    (->> (ctrl-todos/create-todo! storage text)
-         (adapters/todo-datomic->json))))
+  [{body :json-params {storage :storage} :components}]
+  (if-let [errors (s/check sch-todos/NewTodo body)]
+    (bad-response errors)
+    (ring-resp/response
+      (->> (ctrl-todos/create-todo! storage body)
+           (adapters/todo-datomic->json)))))
 
 (defn get-todo
-  [{{:keys [id]} :path-params
-    {:keys [storage]} :components}]
+  [{{id :id} :path-params {storage :storage} :components}]
   (ring-resp/response
     (->> (ctrl-todos/get-todo storage (adapters/str->uuid id))
          (map adapters/todo-datomic->json)
          (first))))
 
 (defn get-todos
-  [{{:keys [storage]} :components}]
+  [{{storage :storage} :components}]
   (ring-resp/response
     (->> (ctrl-todos/get-todos storage)
          (map adapters/todo-datomic->json))))
 
 (defn update-todo
-  [{{:keys [id]} :json-params
-    {:keys [text]} :json-params
-    {:keys [done]} :json-params
-    {:keys [storage]} :components}]
-  (ring-resp/response
-    (->> (ctrl-todos/update-todo!
-           storage (adapters/str->uuid id) text (adapters/str->bool done))
-         (adapters/todo-datomic->json))))
+  [{body :json-params {storage :storage} :components}]
+  (let [{errors :error, :as todo} (parse-json-request sch-todos/Todo body)]
+    (if (some? errors)
+      (bad-response errors)
+      (ring-resp/response
+        (->> (ctrl-todos/update-todo! storage todo)
+             (adapters/todo-datomic->json))))))
 
 (defn delete-todo
-  [{{:keys [id]} :path-params
-    {:keys [storage]} :components}]
+  [{{id :id} :path-params {storage :storage} :components}]
   (ring-resp/response
     (->> (ctrl-todos/delete-todo! storage (adapters/str->uuid id))
          (adapters/todo-datomic->json))))

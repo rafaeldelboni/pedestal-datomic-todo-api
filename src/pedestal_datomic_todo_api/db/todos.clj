@@ -29,10 +29,10 @@
   [[:db.fn/retractEntity [:todo/id id]]])
 
 (defn create-todo!
-  [storage text]
-  (let [todo (db-new-todo (d/tempid :db.part/user) text)]
-    (storage-cli/exec! storage [todo])
-    [todo]))
+  [storage {text :text}]
+  (let [new-todo (db-new-todo (d/tempid :db.part/user) text)]
+    (storage-cli/exec! storage [new-todo])
+    [new-todo]))
 
 (defn get-todo
   [storage id]
@@ -43,13 +43,8 @@
   (storage-cli/query storage db-get-todos nil))
 
 (defn update-todo!
-  [storage id text done]
-  (let [todo
-        (db-build-todo
-          (d/tempid :db.part/user)
-          id
-          text
-          done)]
+  [storage {id :id text :text done :done}]
+  (let [todo (db-build-todo (d/tempid :db.part/user) id text done)]
     (storage-cli/exec! storage [todo])
     [todo]))
 

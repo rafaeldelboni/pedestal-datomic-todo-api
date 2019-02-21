@@ -7,14 +7,6 @@
     (t/is (= (adapter/str->uuid "91861cd2-f2d2-4250-9c97-db7fc6b778d8") 
              #uuid "91861cd2-f2d2-4250-9c97-db7fc6b778d8"))))
 
-(t/deftest str->bool-test
-  (t/testing "should convert input to bool"
-    (t/is (= (adapter/str->bool "true") true))
-    (t/is (= (adapter/str->bool "false") false))
-    (t/is (= (adapter/str->bool "1") true))
-    (t/is (= (adapter/str->bool "0") false))
-    (t/is (= (adapter/str->bool "") false))))
-
 (t/deftest todo-datomic->json-test
   (t/testing "should convert datomic output to json friendly map"
     (t/is (= (adapter/todo-datomic->json [])
