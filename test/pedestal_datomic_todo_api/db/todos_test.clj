@@ -30,8 +30,8 @@
 (t/deftest ^:integration get-db-test
   (t/testing "should get specific todo"
     (let [{storage :storage} (server/start-system! (build-system-map) system)]
-      (let [inserted-todo-1 (first (todos/create-todo! storage "Play Zelda II"))
-            inserted-todo-2 (first (todos/create-todo! storage "Play RE2 2019"))
+      (let [inserted-todo-1 (first (todos/create-todo! storage {:text "Play Zelda II"}))
+            inserted-todo-2 (first (todos/create-todo! storage {:text "Play RE2 2019"}))
             selected-todo (db-first (todos/get-todo storage (:todo/id inserted-todo-1)))]
         (t/is (= (:todo/id inserted-todo-1) (:todo/id selected-todo)))
         (t/is (= (:todo/text inserted-todo-1) (:todo/text selected-todo)))
@@ -42,7 +42,7 @@
 (t/deftest ^:integration insert-db-test
   (t/testing "should insert a todo"
     (let [{storage :storage} (server/start-system! (build-system-map) system)]
-      (let [inserted-todo (first (todos/create-todo! storage "Play Zelda II"))
+      (let [inserted-todo (first (todos/create-todo! storage {:text "Play Zelda II"}))
             firtst-todo (get-in (todos/get-todos storage) [0 0])]
         (t/is (= (:todo/id inserted-todo) (:todo/id firtst-todo))))
       )))
@@ -50,12 +50,12 @@
 (t/deftest ^:integration update-db-test
   (t/testing "should update a todo"
     (let [{storage :storage} (server/start-system! (build-system-map) system)]
-      (let [inserted-todo (first (todos/create-todo! storage "Play Zelda II"))
+      (let [inserted-todo (first (todos/create-todo! storage {:text "Play Zelda II"}))
             updated-todo (first (todos/update-todo!
                            storage
-                           (:todo/id inserted-todo)
-                           "Play Zelda LTTP"
-                           true))
+                           {:id (:todo/id inserted-todo)
+                           :text "Play Zelda LTTP"
+                           :done true}))
             selected-todo (db-first (todos/get-todos storage))]
         (t/is (= (:todo/id inserted-todo) (:todo/id selected-todo)))
         (t/is (= (:todo/id updated-todo) (:todo/id selected-todo)))
@@ -66,8 +66,8 @@
 (t/deftest ^:integration delete-db-test
   (t/testing "should delete a todo"
     (let [{storage :storage} (server/start-system! (build-system-map) system)]
-      (let [inserted-todo-1 (first (todos/create-todo! storage "Play Zelda II"))
-            inserted-todo-2 (first (todos/create-todo! storage "Play RE2 2019"))
+      (let [inserted-todo-1 (first (todos/create-todo! storage {:text "Play Zelda II"}))
+            inserted-todo-2 (first (todos/create-todo! storage {:text "Play RE2 2019"}))
             deleted-todo (first (todos/delete-todo! storage (:todo/id inserted-todo-2)))
             selected-todo (get-in (todos/get-todos storage) [0 0])]
         (t/is (= (:todo/id inserted-todo-2) (:todo/id deleted-todo)))
