@@ -7,7 +7,7 @@
   (stop  [this] this))
 
 (def config-map
-  {:db-uri (or (System/getenv "DB_URI") "datomic:free://localhost:4334/todos")
+  {:db-uri (or (System/getenv "DB_URI") "datomic:free://localhost:4334/todos?password=my-pwd")
    :http-port (Integer/parseInt (or (System/getenv "HTTP_PORT") "8080"))
    :http-host (or (System/getenv "HTTP_HOST") "localhost")})
 

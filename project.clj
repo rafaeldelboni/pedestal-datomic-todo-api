@@ -7,6 +7,7 @@
                  [cheshire "5.8.1"]
                  [com.datomic/datomic-free "0.9.5697"]
                  [com.stuartsierra/component "0.4.0"]
+                 [dawcs/flow "1.0.0"]
                  [io.pedestal/pedestal.jetty "0.5.5"]
                  [io.pedestal/pedestal.service "0.5.5"]
                  [io.pedestal/pedestal.service-tools "0.5.5"]

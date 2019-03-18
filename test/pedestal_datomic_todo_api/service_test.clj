@@ -85,9 +85,8 @@
       (let [inserted-todo (request-parsed
                               service :post "/todo" (json/encode {:text "Play Zelda II"}))
             updated-todo (request-parsed
-                           service :put "/todo"
-                           (json/encode {:id (:id inserted-todo)
-                                         :text "Play Zelda LTTP"
+                           service :put (str "/todo/" (:id inserted-todo))
+                           (json/encode {:text "Play Zelda LTTP"
                                          :done true}))
             selected-todo (first (request-parsed service :get "/todo" ""))]
         (t/is (= (:id inserted-todo) (:id selected-todo)))

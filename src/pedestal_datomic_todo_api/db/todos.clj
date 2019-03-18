@@ -32,25 +32,27 @@
   [storage {text :text}]
   (let [new-todo (db-new-todo (d/tempid :db.part/user) text)]
     (storage-cli/exec! storage [new-todo])
-    [new-todo]))
+    new-todo))
 
 (defn get-todo
   [storage id]
-  (storage-cli/query storage db-get-todo id))
+  (-> (storage-cli/query storage db-get-todo id)
+      (get-in [0 0])))
 
 (defn get-todos
   [storage]
-  (storage-cli/query storage db-get-todos nil))
+  (->> (storage-cli/query storage db-get-todos nil)
+      (map first)))
 
 (defn update-todo!
   [storage {id :id text :text done :done}]
   (let [todo (db-build-todo (d/tempid :db.part/user) id text done)]
     (storage-cli/exec! storage [todo])
-    [todo]))
+    todo))
 
 (defn delete-todo!
   [storage id]
   (let [uuid id
         todo (db-delete-todo uuid)]
     (storage-cli/exec! storage todo)
-    [{:todo/id uuid}]))
+    {:todo/id uuid}))

@@ -1,7 +1,9 @@
 version: '3'
 services:
   datomicdb:
-    image: akiel/datomic-free:0.9.5656
+    build:
+      context: ./docker
+      dockerfile: ./db.Dockerfile
     ports:
       - "4334:4334"
       - "4335:4335"
