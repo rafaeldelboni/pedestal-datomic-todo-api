@@ -1,0 +1,3 @@
+{:known-macros [
+  schema.core/defschema
+]}

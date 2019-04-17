@@ -1,8 +1,8 @@
 (ns pedestal-datomic-todo-api.components.webserver
   (:require [com.stuartsierra.component :as component]
             [io.pedestal.interceptor.helpers :refer [before]]
-            [io.pedestal.http.route :as route]
-            [io.pedestal.http :as http]))
+            [io.pedestal.http :as http]
+            [reitit.pedestal :as pedestal]))
 
 (defn- add-system [service]
   (before (fn [context] (assoc-in context [:request :components] service))))
@@ -15,15 +15,15 @@
              [::http/interceptors]
              #(vec (->> % (cons (add-system service))))))
 
-(defn base-service [routes config]
+(defn base-service [config]
   {:env          :dev
-   ::http/router :prefix-tree
-   ::http/routes #(route/expand-routes (deref routes))
+   ::http/routes []
    ::http/type   :jetty
    ::http/port   (:http-port config)
    ::http/host   (:http-host config)})
 
-(defn dev-init [service-map]
+(defn dev-init [routes service-map]
+  (println "rou" routes service-map)
   (-> service-map
       (merge {:env                   :dev
               ;; do not block thread that starts web server
@@ -33,6 +33,7 @@
               ;; all origins are allowed in dev mode
               ::http/allowed-origins {:creds true :allowed-origins (constantly true)}})
       ;; Wire up interceptor chains
+      (pedestal/replace-last-interceptor routes)
       http/default-interceptors
       http/dev-interceptors))
 
@@ -42,8 +43,8 @@
     (println 
       (str ";; Starting webserver on " (get-in config [:config :http-port])))
     (assoc this :service
-           (->> (base-service (:routes routes) (:config config))
-                dev-init
+           (->> (base-service (:config config))
+                (dev-init (:routes routes))
                 (system-interceptors this)
                 http/create-server
                 http/start)))

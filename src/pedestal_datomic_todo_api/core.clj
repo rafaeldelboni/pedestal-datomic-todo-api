@@ -15,7 +15,7 @@
   (component/system-map
     :config (config/new-config config/config-map)
     :storage (component/using (storage/new-storage-datomic) [:config])
-    :routes  (routes/new-routes #'pedestal-datomic-todo-api.service/routes)
+    :routes  (routes/new-routes pedestal-datomic-todo-api.service/routes)
     :http-server (component/using (webserver/new-webserver) [:config :routes :storage])))
 
 (defn -main
